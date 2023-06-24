@@ -75,6 +75,10 @@ app.post('/login', (req, res) => {
     });
 });
 
+app.get('/getAllUsers', (req, res) => {
+    res.json(users)
+})
+
 // Start the server
 const port = 3000;
 app.listen(port, () => {
