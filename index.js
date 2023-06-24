@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const serverless = require('serverless-http')
+const router = express.Router()
 
 const app = express();
 app.use(bodyParser.json());
@@ -78,3 +80,6 @@ const port = 3000;
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
+
+app.use('/.netlify/functions/api/', router)
+module.exports.handler = serverless(app)
