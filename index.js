@@ -15,7 +15,7 @@ const secretKey = 'your_secret_key';
 const users = [];
 
 
-// mongo start 
+// mongo start   - -- - -- -- --  -
 
 const { MongoClient } = require('mongodb');
 
@@ -39,13 +39,13 @@ async function connect() {
 connect();
 
 
-// mongo end
+// mongo end  - -- -- - -- - - 
 
 
-// mongo save user start
+// mongo save user start  - -- -- - - - - -- -
 async function saveUser(user) {
     try {
-        const db = client.db('<database-name>');
+        const db = client.db('admin-asr');
         const usersCollection = db.collection('users');
         await usersCollection.insertOne(user);
         console.log('User saved successfully');
@@ -56,10 +56,27 @@ async function saveUser(user) {
 
 // Example usage
 //   const newUser = { username: 'exampleUser', email: 'example@example.com' };
-//   saveUser(newUser);
-// mongo save user end   
 
 
+// mongo save user end   ------------
+
+
+// mongo get all users - -- -- -- - -- - --
+
+async function getAllUsers() {
+
+    const db = client.db('admin-asr')
+    const usersCollection = db.collection('users');
+
+    try {
+        const users = await usersCollection.find().toArray();
+        return users;
+    } catch (err) {
+        console.error('Error retrieving users:', err);
+    }
+}
+
+//   - - - -- -- - -- - --
 
 // Register a new user
 app.post('/register', (req, res) => {
@@ -127,8 +144,10 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.get('/getAllUsers', (req, res) => {
-    res.json(users)
+app.get('/getAllUsers', async (req, res) => {
+
+    const data = await getAllUsers()
+    res.json(data)
 })
 
 // Start the server
@@ -136,6 +155,3 @@ const port = 3000;
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
-
-app.use('/.netlify/functions/api/', router)
-module.exports.handler = serverless(app)
