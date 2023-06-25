@@ -2,8 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const serverless = require('serverless-http')
-const router = express.Router()
 
 const app = express();
 app.use(bodyParser.json());
