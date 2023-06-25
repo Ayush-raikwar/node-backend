@@ -14,6 +14,53 @@ const secretKey = 'your_secret_key';
 // Dummy database to store registered users
 const users = [];
 
+
+// mongo start 
+
+const { MongoClient } = require('mongodb');
+
+// Connection URI
+const uri = 'mongodb+srv://admin-asr:asradmin@cluster-test.mgpia3i.mongodb.net/';
+
+// Create a new MongoClient
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Connect to the MongoDB cluster
+async function connect() {
+    try {
+        await client.connect();
+        console.log('Connected to MongoDB');
+    } catch (err) {
+        console.error('Error connecting to MongoDB:', err);
+    }
+}
+
+// Call the connect function to establish a connection
+connect();
+
+
+// mongo end
+
+
+// mongo save user start
+async function saveUser(user) {
+    try {
+        const db = client.db('<database-name>');
+        const usersCollection = db.collection('users');
+        await usersCollection.insertOne(user);
+        console.log('User saved successfully');
+    } catch (err) {
+        console.error('Error saving user:', err);
+    }
+}
+
+// Example usage
+//   const newUser = { username: 'exampleUser', email: 'example@example.com' };
+//   saveUser(newUser);
+// mongo save user end   
+
+
+
 // Register a new user
 app.post('/register', (req, res) => {
     const { username, password } = req.body;
@@ -35,7 +82,12 @@ app.post('/register', (req, res) => {
             }
 
             // Save the user in the database
-            users.push({ username, password: hash });
+            let usr = {
+                username: username,
+                password: password
+            }
+            saveUser(usr)
+            // users.push({ username, password: hash });
             res.status(200).json({ message: 'User registered successfully' });
         });
     });
