@@ -7,10 +7,10 @@ const app = express();
 app.use(bodyParser.json());
 
 // Replace this with your own secret key
-const secretKey = 'your_secret_key';
+const secretKey = 'manglutester';
 
 // Dummy database to store registered users
-const users = [];
+let users = [];
 
 
 // mongo start   - -- - -- -- --  -
@@ -37,10 +37,10 @@ async function connect() {
 connect();
 
 
-// mongo end  - -- -- - -- - - 
 
 
-// mongo save user start  - -- -- - - - - -- -
+
+
 async function saveUser(user) {
     try {
         const db = client.db('admin-asr');
@@ -52,61 +52,79 @@ async function saveUser(user) {
     }
 }
 
-// Example usage
-//   const newUser = { username: 'exampleUser', email: 'example@example.com' };
 
 
-// mongo save user end   ------------
 
 
-// mongo get all users - -- -- -- - -- - --
+
 
 async function getAllUsers() {
 
     const db = client.db('admin-asr')
     const usersCollection = db.collection('users');
 
+    const pipeline = [{ $project: { password: 0 } }];
+
     try {
-        const users = await usersCollection.find().toArray();
+        const usersdb = await usersCollection.aggregate(pipeline).toArray();
+        users = usersdb;
         return users;
     } catch (err) {
         console.error('Error retrieving users:', err);
     }
 }
 
-//   - - - -- -- - -- - --
 
-// Register a new user
-app.post('/register', (req, res) => {
-    const { username, password } = req.body;
 
-    // Check if the username is already taken
-    if (users.find(user => user.username === username)) {
-        return res.status(400).json({ error: 'Username already exists' });
-    }
+// mongo end  - -- -- - -- - - 
 
-    // Generate a salt and hash the password
-    bcrypt.genSalt(10, (err, salt) => {
-        if (err) {
-            return res.status(500).json({ error: 'Failed to register user' });
+// APIS ->
+
+
+
+
+app.post('/register', async (req, res) => {
+    const { username, password, email, fullName } = req.body;
+
+    try {
+        const db = client.db('admin-asr');
+        const usersCollection = db.collection('users');
+
+        // Check if the username is already taken
+        const existingUser = await usersCollection.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Username already exists' });
         }
 
-        bcrypt.hash(password, salt, (err, hash) => {
+        bcrypt.genSalt(10, (err, salt) => {
             if (err) {
                 return res.status(500).json({ error: 'Failed to register user' });
             }
 
-            // Save the user in the database
-            let usr = {
-                username: username,
-                password: password
-            }
-            saveUser(usr)
-            // users.push({ username, password: hash });
-            res.status(200).json({ message: 'User registered successfully' });
+            bcrypt.hash(password, salt, async (err, hash) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Failed to register user' });
+                }
+
+                const user = {
+                    username,
+                    password: hash,
+                    fullName,
+                    email
+                };
+
+                await saveUser(user);
+
+                res.status(200).json({ message: 'User registered successfully' });
+            });
         });
-    });
+    } catch (err) {
+        console.error('Error registering user:', err);
+        res.status(500).json({ error: 'Failed to register user' });
+    }
 });
+
+
 
 app.get('/api/data', (req, res) => {
     const data = [
@@ -119,28 +137,58 @@ app.get('/api/data', (req, res) => {
 });
 
 // User login
-app.post('/login', (req, res) => {
+
+
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
-    // Find the user in the database
-    const user = users.find(user => user.username === username);
-    if (!user) {
-        return res.status(401).json({ error: 'Invalid username or password' });
-    }
+    try {
+        const db = client.db('admin-asr');
+        const usersCollection = db.collection('users');
+        const user = await usersCollection.findOne({ username });
 
-    // Compare the provided password with the stored hash
-    bcrypt.compare(password, user.password, (err, isMatch) => {
-        if (err || !isMatch) {
+        if (!user) {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
 
-        // Generate a JWT token
-        const token = jwt.sign({ username }, secretKey);
+        bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err || !isMatch) {
+                return res.status(401).json({ error: 'Invalid username or password' });
+            }
 
-        // Send the token as a response
-        res.status(200).json({ token });
-    });
+            const token = jwt.sign({ username }, secretKey);
+            res.status(200).json({ token });
+        });
+    } catch (err) {
+        console.error('Error logging in:', err);
+        res.status(500).json({ error: 'Failed to log in' });
+    }
 });
+
+app.delete('/deleteUser/:username', async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        const db = client.db('admin-asr');
+        const usersCollection = db.collection('users');
+
+        // Find the user by username
+        const user = await usersCollection.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Delete the user from the database
+        await usersCollection.deleteOne({ username });
+
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting user:', err);
+        res.status(500).json({ error: 'Failed to delete user' });
+    }
+});
+
 
 app.get('/getAllUsers', async (req, res) => {
 
