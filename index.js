@@ -18,7 +18,7 @@ let users = [];
 const { MongoClient } = require('mongodb');
 
 // Connection URI
-const uri = 'mongodb+srv://admin-asr:asradmin@cluster-test.mgpia3i.mongodb.net/';
+const uri = 'mongodb+srv://admin2-asr:admin2asr@cluster-test.mgpia3i.mongodb.net/';
 
 // Create a new MongoClient
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -43,7 +43,7 @@ connect();
 
 async function saveUser(user) {
     try {
-        const db = client.db('admin-asr');
+        const db = client.db('admin2-asr');
         const usersCollection = db.collection('users');
         await usersCollection.insertOne(user);
         console.log('User saved successfully');
@@ -60,7 +60,7 @@ async function saveUser(user) {
 
 async function getAllUsers() {
 
-    const db = client.db('admin-asr')
+    const db = client.db('admin2-asr')
     const usersCollection = db.collection('users');
 
     const pipeline = [{ $project: { password: 0 } }];
@@ -87,7 +87,7 @@ app.post('/register', async (req, res) => {
     const { username, password, email, fullName } = req.body;
 
     try {
-        const db = client.db('admin-asr');
+        const db = client.db('admin2-asr');
         const usersCollection = db.collection('users');
 
         // Check if the username is already taken
@@ -143,7 +143,7 @@ app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const db = client.db('admin-asr');
+        const db = client.db('admin2-asr');
         const usersCollection = db.collection('users');
         const user = await usersCollection.findOne({ username });
 
@@ -169,7 +169,7 @@ app.delete('/deleteUser/:username', async (req, res) => {
     const { username } = req.params;
 
     try {
-        const db = client.db('admin-asr');
+        const db = client.db('admin2-asr');
         const usersCollection = db.collection('users');
 
         // Find the user by username
