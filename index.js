@@ -114,8 +114,8 @@ app.post('/register', async (req, res) => {
                 };
 
                 await saveUser(user);
-
-                res.status(200).json({ message: 'User registered successfully' });
+                const token = jwt.sign({ username, password }, secretKey);
+                res.status(200).json({ message: 'User registered successfully', token: token });
             });
         });
     } catch (err) {
