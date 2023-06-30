@@ -195,8 +195,8 @@ app.post('/login', async (req, res) => {
         const data = {
             userData: {
                 userName: username,
-                fullName: fullName,
-                email: email,
+                // fullName: fullName,
+                // email: email,
                 properties: [
                     {
                         id: 1,
@@ -244,7 +244,7 @@ app.post('/login', async (req, res) => {
 
             const token = jwt.sign({ username }, secretKey);
             res.status(200).json({
-                token,
+                token: token,
                 data: data
             });
         });
