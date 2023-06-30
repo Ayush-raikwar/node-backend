@@ -113,9 +113,55 @@ app.post('/register', async (req, res) => {
                     email
                 };
 
+                const data = {
+                    userData: {
+                        userName: username,
+                        fullName: fullName,
+                        email: email,
+                        properties: [
+                            {
+                                id: 1,
+                                propertyId: 1,
+                                name: 'Ram Tower',
+                                propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                                address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
+                                tenantsActive: 12,
+                            },
+                            {
+                                id: 2,
+                                propertyId: 2,
+                                name: 'Shyam Tower',
+                                propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                                address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
+                                tenantsActive: 12,
+                            },
+                            {
+                                id: 3,
+                                propertyId: 3,
+                                name: 'Manglu bhawan',
+                                propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                                address: 'Global Pork station,Puncture nagar, Bhopal, M.P., India',
+                                tenantsActive: 12,
+                            },
+                            {
+                                id: 4,
+                                propertyId: 4,
+                                name: 'Bhole nagri',
+                                propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                                address: 'Chapra district, Puncture nagar, Bhopal, M.P., India',
+                                tenantsActive: 12,
+                            },
+                        ]
+                    }
+                }
+
                 await saveUser(user);
                 const token = jwt.sign({ username, password }, secretKey);
-                res.status(200).json({ message: 'User registered successfully', token: token });
+                res.status(200).json({
+                    message: 'User registered successfully',
+                    token: token,
+                    data: data
+                });
             });
         });
     } catch (err) {
@@ -146,7 +192,47 @@ app.post('/login', async (req, res) => {
         const db = client.db('admin2-asr');
         const usersCollection = db.collection('users');
         const user = await usersCollection.findOne({ username });
-
+        const data = {
+            userData: {
+                userName: username,
+                fullName: fullName,
+                email: email,
+                properties: [
+                    {
+                        id: 1,
+                        propertyId: 1,
+                        name: 'Ram Tower',
+                        propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                        address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
+                        tenantsActive: 12,
+                    },
+                    {
+                        id: 2,
+                        propertyId: 2,
+                        name: 'Shyam Tower',
+                        propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                        address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
+                        tenantsActive: 12,
+                    },
+                    {
+                        id: 3,
+                        propertyId: 3,
+                        name: 'Manglu bhawan',
+                        propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                        address: 'Global Pork station,Puncture nagar, Bhopal, M.P., India',
+                        tenantsActive: 12,
+                    },
+                    {
+                        id: 4,
+                        propertyId: 4,
+                        name: 'Bhole nagri',
+                        propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                        address: 'Chapra district, Puncture nagar, Bhopal, M.P., India',
+                        tenantsActive: 12,
+                    },
+                ]
+            }
+        }
         if (!user) {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
@@ -157,7 +243,10 @@ app.post('/login', async (req, res) => {
             }
 
             const token = jwt.sign({ username }, secretKey);
-            res.status(200).json({ token });
+            res.status(200).json({
+                token,
+                data: data
+            });
         });
     } catch (err) {
         console.error('Error logging in:', err);
