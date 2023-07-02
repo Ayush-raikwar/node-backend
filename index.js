@@ -17,13 +17,15 @@ let users = [];
 
 const { MongoClient } = require('mongodb');
 
-// Connection URI
-const uri = 'mongodb+srv://admin2-asr:admin2asr@cluster-test.mgpia3i.mongodb.net/';
+const dbUser = 'admin2-asr'
+const dbUserPass = 'admin2asr'
+const dbCollection = 'users'
 
-// Create a new MongoClient
+
+const uri = `mongodb+srv://${dbUser}:${dbUserPass}@cluster-test.mgpia3i.mongodb.net/`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Connect to the MongoDB cluster
+
 async function connect() {
     try {
         await client.connect();
@@ -43,8 +45,8 @@ connect();
 
 async function saveUser(user) {
     try {
-        const db = client.db('admin2-asr');
-        const usersCollection = db.collection('users');
+        const db = client.db(dbUser);
+        const usersCollection = db.collection(dbCollection);
         await usersCollection.insertOne(user);
         console.log('User saved successfully');
     } catch (err) {
@@ -60,8 +62,8 @@ async function saveUser(user) {
 
 async function getAllUsers() {
 
-    const db = client.db('admin2-asr')
-    const usersCollection = db.collection('users');
+    const db = client.db(dbUser)
+    const usersCollection = db.collection(dbCollection);
 
     const pipeline = [{ $project: { password: 0 } }];
 
@@ -87,8 +89,8 @@ app.post('/register', async (req, res) => {
     const { username, password, email, fullName } = req.body;
 
     try {
-        const db = client.db('admin2-asr');
-        const usersCollection = db.collection('users');
+        const db = client.db(dbUser);
+        const usersCollection = db.collection(dbCollection);
 
         // Check if the username is already taken
         const existingUser = await usersCollection.findOne({ username });
@@ -189,8 +191,8 @@ app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const db = client.db('admin2-asr');
-        const usersCollection = db.collection('users');
+        const db = client.db(dbUser);
+        const usersCollection = db.collection(dbCollection);
         const user = await usersCollection.findOne({ username });
         const data = {
             userData: {
@@ -242,7 +244,7 @@ app.post('/login', async (req, res) => {
                 return res.status(401).json({ error: 'Invalid username or password' });
             }
 
-            const token = jwt.sign({ username }, secretKey);
+            const token = jwt.sign({ username }, secretKey, { expiresIn: '2h' });
             res.status(200).json({
                 token: token,
                 data: data
@@ -250,16 +252,52 @@ app.post('/login', async (req, res) => {
         });
     } catch (err) {
         console.error('Error logging in:', err);
-        res.status(500).json({ error: 'Failed to log in' });
+        res.status(500).json({ error: err });
     }
 });
+
+
+app.get('/getUserData/:username', async (req, res) => {
+    const { username } = req.params;
+    const token = req?.headers?.authorization?.split(' ')[1];
+    if (!token) {
+        res.status(500).json({ error: 'No Token provided !' })
+    } else {
+        try {
+            // Verify the token
+            const decoded = jwt.verify(token, secretKey);
+            if (decoded.username !== username) {
+                return res.status(401).json({ error: 'Unauthorized' });
+            }
+
+            // Fetch user data from the database
+            const db = client.db(dbUser);
+            const usersCollection = db.collection(dbCollection);
+            const pipeline = [{ $project: { password: 0 } }];
+
+            const user = await usersCollection.findOne({ username }, { projection: { password: 0 } });
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            // Return the user data
+            res.status(200).json({ userData: user });
+        } catch (err) {
+            console.error('Error retrieving user data:', err);
+            res.status(500).json({ error: err });
+        }
+    }
+});
+
+
+
 
 app.delete('/deleteUser/:username', async (req, res) => {
     const { username } = req.params;
 
     try {
-        const db = client.db('admin2-asr');
-        const usersCollection = db.collection('users');
+        const db = client.db(dbUser);
+        const usersCollection = db.collection(dbCollection);
 
         // Find the user by username
         const user = await usersCollection.findOne({ username });
