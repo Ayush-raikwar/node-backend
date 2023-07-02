@@ -120,40 +120,40 @@ app.post('/register', async (req, res) => {
                         userName: username,
                         fullName: fullName,
                         email: email,
-                        properties: [
-                            {
-                                id: 1,
-                                propertyId: 1,
-                                name: 'Ram Tower',
-                                propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-                                address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
-                                tenantsActive: 12,
-                            },
-                            {
-                                id: 2,
-                                propertyId: 2,
-                                name: 'Shyam Tower',
-                                propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-                                address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
-                                tenantsActive: 12,
-                            },
-                            {
-                                id: 3,
-                                propertyId: 3,
-                                name: 'Manglu bhawan',
-                                propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-                                address: 'Global Pork station,Puncture nagar, Bhopal, M.P., India',
-                                tenantsActive: 12,
-                            },
-                            {
-                                id: 4,
-                                propertyId: 4,
-                                name: 'Bhole nagri',
-                                propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-                                address: 'Chapra district, Puncture nagar, Bhopal, M.P., India',
-                                tenantsActive: 12,
-                            },
-                        ]
+                        // properties: [
+                        //     {
+                        //         id: 1,
+                        //         propertyId: 1,
+                        //         name: 'Ram Tower',
+                        //         propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                        //         address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
+                        //         tenantsActive: 12,
+                        //     },
+                        //     {
+                        //         id: 2,
+                        //         propertyId: 2,
+                        //         name: 'Shyam Tower',
+                        //         propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                        //         address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
+                        //         tenantsActive: 12,
+                        //     },
+                        //     {
+                        //         id: 3,
+                        //         propertyId: 3,
+                        //         name: 'Manglu bhawan',
+                        //         propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                        //         address: 'Global Pork station,Puncture nagar, Bhopal, M.P., India',
+                        //         tenantsActive: 12,
+                        //     },
+                        //     {
+                        //         id: 4,
+                        //         propertyId: 4,
+                        //         name: 'Bhole nagri',
+                        //         propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                        //         address: 'Chapra district, Puncture nagar, Bhopal, M.P., India',
+                        //         tenantsActive: 12,
+                        //     },
+                        // ]
                     }
                 }
 
@@ -197,42 +197,40 @@ app.post('/login', async (req, res) => {
         const data = {
             userData: {
                 userName: username,
-                // fullName: fullName,
-                // email: email,
-                properties: [
-                    {
-                        id: 1,
-                        propertyId: 1,
-                        name: 'Ram Tower',
-                        propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-                        address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
-                        tenantsActive: 12,
-                    },
-                    {
-                        id: 2,
-                        propertyId: 2,
-                        name: 'Shyam Tower',
-                        propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-                        address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
-                        tenantsActive: 12,
-                    },
-                    {
-                        id: 3,
-                        propertyId: 3,
-                        name: 'Manglu bhawan',
-                        propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-                        address: 'Global Pork station,Puncture nagar, Bhopal, M.P., India',
-                        tenantsActive: 12,
-                    },
-                    {
-                        id: 4,
-                        propertyId: 4,
-                        name: 'Bhole nagri',
-                        propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-                        address: 'Chapra district, Puncture nagar, Bhopal, M.P., India',
-                        tenantsActive: 12,
-                    },
-                ]
+                // properties: [
+                //     {
+                //         id: 1,
+                //         propertyId: 1,
+                //         name: 'Ram Tower',
+                //         propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                //         address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
+                //         tenantsActive: 12,
+                //     },
+                //     {
+                //         id: 2,
+                //         propertyId: 2,
+                //         name: 'Shyam Tower',
+                //         propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                //         address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
+                //         tenantsActive: 12,
+                //     },
+                //     {
+                //         id: 3,
+                //         propertyId: 3,
+                //         name: 'Manglu bhawan',
+                //         propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                //         address: 'Global Pork station,Puncture nagar, Bhopal, M.P., India',
+                //         tenantsActive: 12,
+                //     },
+                //     {
+                //         id: 4,
+                //         propertyId: 4,
+                //         name: 'Bhole nagri',
+                //         propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                //         address: 'Chapra district, Puncture nagar, Bhopal, M.P., India',
+                //         tenantsActive: 12,
+                //     },
+                // ]
             }
         }
         if (!user) {
