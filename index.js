@@ -279,7 +279,45 @@ app.get('/getUserData/:username', async (req, res) => {
             }
 
             // Return the user data
-            res.status(200).json({ userData: user });
+            res.status(200).json({
+                userData: {
+                    ...user,
+                    properties: [
+                        {
+                            id: 1,
+                            propertyId: 1,
+                            name: 'Ram Tower',
+                            propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                            address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
+                            tenantsActive: 12,
+                        },
+                        {
+                            id: 2,
+                            propertyId: 2,
+                            name: 'Shyam Tower',
+                            propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                            address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
+                            tenantsActive: 12,
+                        },
+                        {
+                            id: 3,
+                            propertyId: 3,
+                            name: 'Manglu bhawan',
+                            propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                            address: 'Global Pork station,Puncture nagar, Bhopal, M.P., India',
+                            tenantsActive: 12,
+                        },
+                        {
+                            id: 4,
+                            propertyId: 4,
+                            name: 'Bhole nagri',
+                            propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                            address: 'Chapra district, Puncture nagar, Bhopal, M.P., India',
+                            tenantsActive: 12,
+                        },
+                    ]
+                },
+            });
         } catch (err) {
             console.error('Error retrieving user data:', err);
             res.status(500).json({ error: err });
