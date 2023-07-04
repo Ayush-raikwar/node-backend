@@ -26,6 +26,9 @@ const uri = `mongodb+srv://${dbUser}:${dbUserPass}@cluster-test.mgpia3i.mongodb.
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
+const db = client.db(dbUser);
+const usersCollection = db.collection(dbCollection);
+
 async function connect() {
     try {
         await client.connect();
@@ -45,8 +48,7 @@ connect();
 
 async function saveUser(user) {
     try {
-        const db = client.db(dbUser);
-        const usersCollection = db.collection(dbCollection);
+
         await usersCollection.insertOne(user);
         console.log('User saved successfully');
     } catch (err) {
@@ -62,8 +64,6 @@ async function saveUser(user) {
 
 async function getAllUsers() {
 
-    const db = client.db(dbUser)
-    const usersCollection = db.collection(dbCollection);
 
     const pipeline = [{ $project: { password: 0 } }];
 
@@ -89,8 +89,6 @@ app.post('/register', async (req, res) => {
     const { username, password, email, fullName } = req.body;
 
     try {
-        const db = client.db(dbUser);
-        const usersCollection = db.collection(dbCollection);
 
         // Check if the username is already taken
         const existingUser = await usersCollection.findOne({ username });
@@ -191,8 +189,6 @@ app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const db = client.db(dbUser);
-        const usersCollection = db.collection(dbCollection);
         const user = await usersCollection.findOne({ username });
         const data = {
             userData: {
@@ -269,8 +265,6 @@ app.get('/getUserData/:username', async (req, res) => {
             }
 
             // Fetch user data from the database
-            const db = client.db(dbUser);
-            const usersCollection = db.collection(dbCollection);
             const pipeline = [{ $project: { password: 0 } }];
 
             const user = await usersCollection.findOne({ username }, { projection: { password: 0 } });
@@ -332,8 +326,7 @@ app.delete('/deleteUser/:username', async (req, res) => {
     const { username } = req.params;
 
     try {
-        const db = client.db(dbUser);
-        const usersCollection = db.collection(dbCollection);
+
 
         // Find the user by username
         const user = await usersCollection.findOne({ username });
