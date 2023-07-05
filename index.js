@@ -276,40 +276,40 @@ app.get('/getUserData/:username', async (req, res) => {
             res.status(200).json({
                 userData: {
                     ...user,
-                    properties: [
-                        {
-                            id: 1,
-                            propertyId: 1,
-                            name: 'Ram Tower',
-                            propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-                            address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
-                            tenantsActive: 12,
-                        },
-                        {
-                            id: 2,
-                            propertyId: 2,
-                            name: 'Shyam Tower',
-                            propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-                            address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
-                            tenantsActive: 12,
-                        },
-                        {
-                            id: 3,
-                            propertyId: 3,
-                            name: 'Manglu bhawan',
-                            propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-                            address: 'Global Pork station,Puncture nagar, Bhopal, M.P., India',
-                            tenantsActive: 12,
-                        },
-                        {
-                            id: 4,
-                            propertyId: 4,
-                            name: 'Bhole nagri',
-                            propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-                            address: 'Chapra district, Puncture nagar, Bhopal, M.P., India',
-                            tenantsActive: 12,
-                        },
-                    ]
+                    // properties: [
+                    //     {
+                    //         id: 1,
+                    //         propertyId: 1,
+                    //         name: 'Ram Tower',
+                    //         propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                    //         address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
+                    //         tenantsActive: 12,
+                    //     },
+                    //     {
+                    //         id: 2,
+                    //         propertyId: 2,
+                    //         name: 'Shyam Tower',
+                    //         propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                    //         address: 'Abhiruchi Parisar, Old subhash nagar, Bhopal, M.P., India',
+                    //         tenantsActive: 12,
+                    //     },
+                    //     {
+                    //         id: 3,
+                    //         propertyId: 3,
+                    //         name: 'Manglu bhawan',
+                    //         propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                    //         address: 'Global Pork station,Puncture nagar, Bhopal, M.P., India',
+                    //         tenantsActive: 12,
+                    //     },
+                    //     {
+                    //         id: 4,
+                    //         propertyId: 4,
+                    //         name: 'Bhole nagri',
+                    //         propertyImg: 'https://static01.nyt.com/images/2020/01/27/realestate/27WYG-CA-slide-HWXH/27WYG-CA-slide-HWXH-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
+                    //         address: 'Chapra district, Puncture nagar, Bhopal, M.P., India',
+                    //         tenantsActive: 12,
+                    //     },
+                    // ]
                 },
             });
         } catch (err) {
@@ -319,6 +319,55 @@ app.get('/getUserData/:username', async (req, res) => {
     }
 });
 
+app.put('/updateProperties/:username', async (req, res) => {
+    const { username } = req.params;
+    const token = req?.headers?.authorization?.split(' ')[1];
+    const newProperty = req.body.property;
+
+    if (!token) {
+        res.status(500).json({ error: 'No Token provided!' });
+    } else {
+        try {
+
+            const decoded = jwt.verify(token, secretKey);
+            if (decoded.username !== username) {
+                return res.status(401).json({ error: 'Unauthorized' });
+            }
+
+            // Fetch user data from the database
+            const user = await usersCollection.findOne({ username }, { projection: { password: 0 } });
+
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            if (!user.properties) {
+                user.properties = [];
+            }
+
+            const nextId = user.properties.length + 1;
+            const nextPropertyId = nextId;
+
+            const propertyObject = {
+                id: nextId,
+                propertyId: nextPropertyId,
+                ...newProperty
+            };
+
+            user.properties.push(propertyObject);
+
+            // user.properties.push(newProperty);
+
+            // Update the user data in the database
+            await usersCollection.updateOne({ username }, { $set: { properties: user.properties } });
+
+            // Return the updated user data
+            res.status(200).json({ message: 'User data updated successfully', userData: user });
+        } catch (err) {
+            console.error('Error updating user data:', err);
+            res.status(500).json({ error: err });
+        }
+    }
+});
 
 
 
