@@ -397,8 +397,12 @@ app.delete('/deleteUser/:username', async (req, res) => {
 
 app.get('/getAllUsers', async (req, res) => {
 
-    const data = await getAllUsers()
-    res.json(data)
+    try {
+        const data = await getAllUsers();
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
 })
 
 // Start the server
