@@ -156,7 +156,7 @@ app.post('/register', async (req, res) => {
                 }
 
                 await saveUser(user);
-                const token = jwt.sign({ username, password }, secretKey);
+                const token = jwt.sign({ username, password }, secretKey, { expiresIn: '12h' });
                 res.status(200).json({
                     message: 'User registered successfully',
                     token: token,
@@ -238,7 +238,7 @@ app.post('/login', async (req, res) => {
                 return res.status(401).json({ error: 'Invalid username or password' });
             }
 
-            const token = jwt.sign({ username }, secretKey, { expiresIn: '2h' });
+            const token = jwt.sign({ username }, secretKey, { expiresIn: '12h' });
             res.status(200).json({
                 token: token,
                 data: data
